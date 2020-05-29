@@ -1,0 +1,58 @@
+if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
+   set fileencodings=ucs-bom,utf-8,latin1
+endif
+
+set laststatus=2
+set rtp+=/usr/lib/python3.5/site-packages/powerline/bindings/vim
+set bs=indent,eol,start		" allow backspacing over everything in insert mode
+set number
+
+:map <C-F10> :cwindow<CR>
+:map <C-F11> :cp<CR>
+:map <C-F12> :cn<CR>
+
+nmap <C-h> :wincmd h<CR>
+nmap <C-j> :wincmd j<CR>
+nmap <C-k> :wincmd k<CR>
+nmap <C-l> :wincmd l<CR>
+nmap <C-F9> :TlistToggle<CR>:wincmd =<CR>
+
+filetype detect
+
+if &filetype!="go"
+  set expandtab
+  set shiftwidth=2
+  set softtabstop=2
+endif
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin()
+  Plug 'AndrewRadev/linediff.vim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'majutsushi/tagbar'
+  Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+call plug#end()
+
+if filereadable("/etc/vimrc.coc")
+  source /etc/vimrc.coc
+endif
+
+let g:python3_host_prog = '/usr/bin/python'
+
+vnoremap <C-D> :Linediff<CR>
+nnoremap <C-D> :LinediffReset<CR>
+
+nmap <F8> :TagbarOpenAutoClose<CR>
+nmap <F9> :TagbarToggle<CR>
+let g:deoplete#enable_at_startup = 1
+let g:tagbar_left = 1
+
+" disable vim-go :GoDef short cut (gd)
+" this is handled by LanguageClient [LC]
+let g:go_def_mapping_enabled = 0

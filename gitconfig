@@ -1,19 +1,41 @@
 [core]
-	editor = vi
+	editor = vim
+	excludesfile = /home/jrivera/.gitignore
+[user]
+	email = jarrpa@redhat.com
+	name = Jose A. Rivera
 [color]
 	diff = auto
 	status = auto
 	branch = auto
 [alias]
-	lg1 = log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+	lg1 = log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)%>(14,trunc)%ar%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+	lg1ng = log --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)%>(14,trunc)%ar%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
 	lg2 = log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(bold white)— %an%C(reset)' --abbrev-commit
 	lg = !"git lg1"
 	lg1np = !"git lg1 --exclude=*private*"
+	autobuild = push autobuild +HEAD:master
+#	author = !"SEARCH=${1:-`git config user.email`}; shift; git log --format='%aN <%aE>' | sort -u | grep $SEARCH"
 	author = !"SEARCH=${@:-`git config user.email`}; set --; git log --format='%aN <%aE>' | uniq | grep -m 1 \"$SEARCH\""
 	authors = !"SEARCH=${@:-`git config user.email`}; set --; git log --format='%aN <%aE>' | grep \"$SEARCH\" | uniq | awk '!a[$0]++'"
+#	reviewed = !"git rebase -i -x 'sed -i \"\\$aReviewed-by: Jose A. Rivera <jarrpa@samba.org>\" .git/COMMIT_EDITMSG && git commit --amend -F .git/COMMIT_EDITMSG --cleanup=strip'"
+#	reviewed = !"BRANCH=$1; shift; AUTHORS=\"\"; while [[ $# -gt 0 ]]; do AUTHORS=\"$AUTHORS \\\"`git author $1`\\\"\"; shift; done; git rebase -i -x \"~/git-reviewed.sh $AUTHORS\" $BRANCH"
 	reviewed = !"BRANCH=${1:-master}; shift; AUTHORS=\"~/git-reviewed.sh\"; for A in \"${@:-`git config user.email`}\"; do AUTHORS=$AUTHORS\" \\\"`git author $A`\\\"\"; done; set --; git rebase -i -x \"$AUTHORS\" $BRANCH"
 	echo = !"VAR=$1; shift; echo "
 	sync = !"OPTS=""; while [[ $1 =~ ^- ]]; do OPTS=\"$OPTS $1\"; shift; done; REMOTE=${1:-origin}; shift; BRANCH=${1:-master}; shift; git checkout -q --detach; git fetch -v ${OPTS} ${REMOTE} ${BRANCH}:${BRANCH}; git checkout -q -"
-	synbase = !"BRANCH=${1:-master}; shift; git sync origin ${BRANCH}; git rebase ${BRANCH}"
+	synbase = !"REMOTE=${1:-origin}; shift; BRANCH=${1:-master}; shift; git sync ${REMOTE} ${BRANCH}; git rebase ${REMOTE}/${BRANCH}"
+	wipe = !"git reset --hard HEAD; git clean -xfd"
+	dbranch = !"BRANCH=${1}; shift; git checkout master; git branch -D ${BRANCH}; git push wip :${BRANCH}"
+	pr = !"PR=${1}; shift; git fetch origin pull/${PR}/head:pr${PR}; git checkout pr${PR}"
+	oldest-ancestor = !"bash -c \"diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent ${1:-master}) <(git rev-list --first-parent ${2:-HEAD}) | head -1\""
+	resolve = !"FILE=${1}; shift; git show :2:${FILE} > ${FILE}.ours; git show :3:${FILE} > ${FILE}.theirs; mv ${FILE}.ours ${FILE}; git add ${FILE}; mv ${FILE}.theirs ${FILE}"
+	dw = diff -w
+	ctags = !.git/hooks/ctags
 [push]
 	default = simple
+#[diff]
+#	external = git_diff_wrapper
+#[pager]
+#	diff =
+[init]
+	templatedir = ~/.git_template
