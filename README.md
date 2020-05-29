@@ -14,7 +14,7 @@ configurations from `/etc/vimrc.local`. Using that, I maintain two files:
 
 * **vimrc.local:** My primary vim config
 * **vimrc.coc:** Another vim config file, included by `vimrc.local`, for
-  configuring the [CoC plugin|https://github.com/neoclide/coc.nvim/].
+  configuring the [CoC plugin](https://github.com/neoclide/coc.nvim/)
 
 In addition, CoC takes some additional configuration that must be specified in
 my home directory:
