@@ -4,6 +4,9 @@ General hacking scripts, tools, or configurations used by jarrpa
 ## git
 * **gitconfig:** My global .gitconfig
 * **git-reviewed.sh:** A script for doing e-mail based git reviews
+* Installed tools:
+  * **[tig](https://github.com/jonas/tig):** History browsing and branch management
+  * **[stgit](https://github.com/stacked-git/stgit):** Patch development workflow
 
 ## vim
 My vim setup is a little weird, but then again so would anyone's be after a few
